@@ -94,7 +94,7 @@
 ;(define-word & s-conjunction)
 ;(define-word \| s-conjunction)
 ;(define-word andn np-conjunction)
-(define-word & conjunction)
+;(define-word & conjunction)
 
 ;; example noun phrases
 (define np1 (list the cat))
@@ -105,7 +105,7 @@
 (define s1 (list oliver drowned))
 (define s2 (list the big cat drowned))
 (define s3 (list the big red dog chased a cat))
-(define s4 (list the clever cat drowned & a big shiny red dog chased oliver))
+;(define s4 (list the clever cat drowned & a big shiny red dog chased oliver))
 
 ;; ungrammatical phrases
 (define bad1 (list a cat chased)) 
@@ -255,111 +255,3 @@
 (define parse-2
   (lambda exp
     (parse-from-left-to-right exp)))
-
-;; code from here on is part of the pack/unpack technique. saved here for posterity.
-
-;(define unpack-exp
-;  (λ (exp)
-;    (if (null? exp)
-;        null
-;        (let ([fst (car exp)]
-;              [rst (cdr exp)])
-;          (match fst 
-;            [(list a b 'unpack) (cons a (cons b (unpack-exp rst)))]
-;            [_ (cons fst (unpack-exp rst))])))))
-;
-;(define scan-left-to-right
-;  (λ (exp)
-;    (let ([passed (unpack-exp (one-pass-left-to-right exp))])
-;      (if (null? passed)
-;          null
-;          (cons (car passed) (scan-left-to-right (cdr passed)))))))
-;
-;(define parse-left-to-right
-;  (λ (exp)
-;    (let ([parsed (scan-left-to-right exp)])
-;      (if (= (length parsed) 1)
-;          (car parsed)
-;          (if (equal? parsed exp)
-;              parsed
-;              (parse-left-to-right parsed))))))
-
-;; these are possibly no longer necessary because of matching
-
-
-;;; abstraction to break a type up into its source/target type
-;(define break-type
-;  (λ (type over consequent alternative)
-;    (if (atomic-type? type)
-;        type
-;        (let* ([choose (if over consequent alternative)]
-;               [broken (choose type)])
-;          (if (pair? broken)
-;              broken
-;              (list broken)))))) ; we want output to be a type, and types are always lists
-
-;;; for f: S -> T, grabs S
-;;; if over, S on right; else on left
-;(define source-type
-;  (λ (type over)
-;    (break-type type over caddr car)))
-;
-;;; for f: S -> T, grabs T
-;;; if over, T on left, else on right
-;(define target-type
-;  (λ (type over)
-;    (break-type type over car caddr)))
-
-;; old resolve-objects and its helpers without matching
-;; this is an awfully big thing to break out...
-;; but readability suffers without these abstractions in resolve-objects...
-;(define handle-application
-;  (λ (over1 over2 src1 src2 tar1 tar2 type1 type2 end-label)
-;      (cond ; function application in Combinatory Categorial Grammar
-;        [(and over1 (equal? src1 type2)) ; tar1/src1 src1 => tar1
-;         (list end-label tar1)]
-;        [(and (not over2) (equal? src2 type1)) ; src2 src2\tar2 => tar2
-;         (list end-label tar2)]
-;        [else #f])))
-
-;; combinator B in CCG
-;(define handle-composition
-;  (λ (atom1 atom2 over1 over2 src1 src2 tar1 tar2 type1 type2 end-label)
-;    (if
-;     (and (not atom1) (not atom2)) ; because atoms will have null sources and targets, which we don't want to return
-;          ;(equal? tar1 src2)) ; has to be true in either composition case
-;     (cond 
-;       [(and over1 over2 ; tar1/src1 tar2/src2 => tar1/src2
-;             (equal? src1 tar2)) 
-;        (list end-label 
-;              (append tar1 '(/) src2))]
-;       [(and (not over1) (not over2) ; src1\tar1 src2\tar2 => src1\tar2
-;             (equal? src2 tar1))
-;        (list end-label 
-;              (append tar2 '(|\|) src1))] ; z\y y\x => z\x
-;       [else #f])
-;     #f)))
-
-;(define resolve-objects
-;  (λ (obj1 obj2)
-;    ;; get the properties of the objects
-;    (let ([labels1 (labels-of obj1)]
-;           [labels2 (labels-of obj2)]
-;           [type1 (type-of obj1)]
-;           [type2 (type-of obj2)]
-;           [atom1 (atomic-type? type1)]
-;           [atom2 (atomic-type? type2)]
-;           [over1 (if atom1 #f (over? type1))] ; #f is a placeholder -- when atom, over not necessary
-;           [over2 (if atom2 #f (over? type2))]
-;           [end-label (append (labels-of obj1) (labels-of obj2))]) 
-;      ;; break up composite types
-;      (let ([src1 (if atom1 null (source-type type1 over1))] ; an atomic type has no source
-;            [src2 (if atom2 null (source-type type2 over2))]
-;            [tar1 (if atom1 null (target-type type1 over1))] ; an atomic type has no target
-;            [tar2 (if atom2 null (target-type type2 over2))])
-;        ;; finally, merge the objects!
-;        (let ([applied (handle-application type1 type2 end-label)]);over1 over2 src1 src2 tar1 tar2 type1 type2 end-label)])
-;          (if applied applied
-;              (let ([composed (handle-composition type1 type2 end-label)]);atom1 atom2 over1 over2 src1 src2 tar1 tar2 type1 type2 end-label)])
-;                (if composed composed
-;                    #f))))))))
