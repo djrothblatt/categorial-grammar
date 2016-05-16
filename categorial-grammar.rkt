@@ -139,7 +139,7 @@
   (λ (obj)
     (cadr obj)))
 
-;; because a type is a list, we check if it's a singleton list to determine whether atomic
+;; because a type is a list, we check if it's a singleton list to determine whether it is atomic
 (define atomic-type?
   (λ (type)
     (null? (cdr type))))
@@ -152,8 +152,7 @@
   (λ (type)
     (eq? '/ (cadr type)))) 
 
-;; pattern matching is so much better than what you had before
-;; function application in Combinatory Categorial Grammar
+;; function application in Combinatory Categorial Grammar (CCG)
 (define handle-application
   (λ (t1 t2 end-label)
     (let ((wrap (λ (tar) ((if (list? tar) identity list) tar))))
@@ -254,4 +253,4 @@
 ;; EX: (parse-2 a dog chased my cat)
 (define parse-2
   (lambda exp
-    (parse-from-left-to-right exp)))
+    (parse-1 exp)))
