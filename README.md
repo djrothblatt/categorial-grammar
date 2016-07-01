@@ -29,7 +29,7 @@ create larger phrases and determine their syntactic category.
 The parallels with type systems in mathematics and programming
 languages suggest that a categorial grammar could be used in a
 statically-typed programming language, and this possibility is hinted
-at in the
+at in the code.
 
 Use: Load categorial-grammar.rkt in a Racket REPL (such as DrRacket,
 which the author uses). To add a category to the grammar, use the
