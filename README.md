@@ -12,7 +12,7 @@ definition allows for infinitely many types.) This notion parallels
 the types of mathematical functions (e.g., f: Naturals ->
 Integers) and programming languages like ML and Haskell. The major difference
 between a categorial grammar's types and mathematical function types is
-that categorial types are non-commutative: A/B != A\B.
+that categorial types have two non-equivalent type constructors: A/B != A\B.
 A/B is read "A over B", and indicates that an object of
 this type takes an object of type B on the right and produces an
 object of type A; A\B is read "A under B", and indicates that an
